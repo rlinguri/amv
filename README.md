@@ -1,5 +1,5 @@
 # AMV
-Abstract Class Library for PHP Applications
+_Abstract Class Library for PHP Applications_
 
 ### class AMVDatabase ###
 
@@ -17,7 +17,7 @@ Abstract Class Library for PHP Applications
 
         $db->executeStmt('value');
     
-4. Access the output
+4. Access the output (optional)
 
         $record = $db->fetchRecord();   // returns assoc
         $results = $db->fetchRecords(); // returns array
