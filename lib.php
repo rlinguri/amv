@@ -20,7 +20,7 @@ abstract class AMVObject
 
         if (count($args) > 0) {
 
-            foreach ($args as $key=>$val) {
+            foreach (array_shift($args) as $key=>$val) {
 
                 $this->$key = $val;
 
