@@ -196,6 +196,148 @@ abstract class AMVDatabase
 abstract class AMVModel
 {
 
+    protected $db;
+
+    protected $table;
+
+    protected $columns;
+
+    protected $key;
+
+/**** ADD THE FOLLOWING TO EXTENDED CLASSES
+
+    // model singleton
+    protected static $ms;
+
+    // singleton getter
+    public static function ms()
+    {
+        if (!isset(self::$ms)) {
+
+            self::$ms = new self();
+
+        }
+
+        return self::$ms;
+
+    }
+
+    // constructor
+    public function __construct()
+    {
+
+        $this->db = YourDatabaseClass::db();
+
+        $this->table = 'table_name';
+
+        $this->colums = array(
+            'col1' => 'INTEGER',
+            'col2' => 'TEXT',
+            'col3' => 'DOUBLE'
+        );
+
+        $this->key = 'col1';
+
+    }
+
+****/
+
+    /***
+     * fetch all records
+     * @param:  void
+     * @return: assoc
+     */
+    public function fetchAll()
+    {
+
+        $this->db->setStmt('SELECT * FROM '.$this->table);
+
+        $this->db->executeStmt();
+
+        return $this->db->fetchRecords();
+
+    }
+
+    /***
+     * fetch a single record
+     * @param:  integer
+     * @return: assoc
+     */
+    public function fetchRecordFromId($id)
+    {
+
+        $this->db->setStmt('SELECT * FROM '.$this->table.' WHERE '.$this->key.' = ? LIMIT 1');
+
+        $this->db->executeStmt($id);
+
+        return $this->db->fetchRecord();
+
+    }
+
+    /***
+     * fetch a range of records
+     * @param:  integer
+     * @return: assoc
+     */
+    public function fetchRange($startId, $endId)
+    {
+
+        // simplify statement
+        $low = $startId - 1;
+        $high = $endId + 1;
+
+        $this->db->setStmt('SELECT * FROM '.$this->table.' WHERE '.$this->key.' > ? AND '.$this->key.' < ?');
+
+        $this->db->executeStmt($low,$high);
+
+        return $this->db->fetchRecords();
+
+    }
+
+    /***
+     * inserts a record
+     * @param:  assoc
+     * @return: integer
+     */
+    public function insertRecord($assoc)
+    {
+
+        $keys = '';
+
+        $vphs = '';
+
+        $k = 1;
+
+        foreach (array_keys($assoc) as $key) {
+
+            $keys .= $key;
+
+            $vphs .= '?';
+
+            echo $k.PHP_EOL;
+
+            if ($k < count($assoc)) {
+
+                $keys .= ',';
+
+                $vphs .= ',';
+
+            }
+
+            $k++;
+
+        }
+
+        $sql = 'INSERT INTO '.$this->table.' ('.$keys.') VALUES ('.$vphs.')';
+
+        $this->db->setStmt($sql);
+
+        call_user_func_array(array($this->db, 'executeStmt'), array_values($assoc));
+
+        return $this->db->lastInsertId();
+
+    }
+
 }
 
 abstract class AMVView
