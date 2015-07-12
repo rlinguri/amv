@@ -1,7 +1,10 @@
 <?php
-
-// define('AMV_MODE', 'DEVELOPMENT');
-define('AMV_MODE', 'PRODUCTION');
+/****
+ * @package   AMV
+ * @author    Roderic Linguri <rod@linguri.com>
+ * @copyright 2015 Linguri LLC
+ * @license   MIT (This header MUST remain intact)
+ */
 
 abstract class AMVObject
 {
