@@ -143,7 +143,7 @@ abstract class AMVDatabase
         
         if (isset($this->stmt)) {
 
-            if (count($args) > 0)) {
+            if (count($args) > 0) {
             
                 if ($this->stmt->execute($args) == true) {
                 
