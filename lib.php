@@ -34,10 +34,10 @@ abstract class AMVDatabase
 
     /* @property PDO connection */
     protected $pdo;
-    
+
     /* @property the PDO statement handle */
     protected $stmt;
-    
+
     /* @property array of arguments to pass to statement */
     protected $args;
 
@@ -50,13 +50,13 @@ abstract class AMVDatabase
     public static function db()
     {
         if (!isset(self::$db)) {
-        
+
             self::$db = new self();
-            
+
         }
-        
+
         return self::$db;
-        
+
     }
 
     // constructor
@@ -64,8 +64,8 @@ abstract class AMVDatabase
     {
 
         $this->pdo = new PDO('mysql:host=localhost;dbname=testdb','root','password');
-        
-        // production 
+
+        // production
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
         // development
@@ -83,30 +83,30 @@ abstract class AMVDatabase
     public function setStmt()
     {
         $args = func_get_args();
-        
+
         if (count($args) > 0) {
-        
-            $this->stmt = array_shift($args);
-            
+
+            $this->stmt = $this->pdo->prepare(array_shift($args));
+
         }
-        
+
         // any extraneous parameters are assumed to be statement parameters
         if (count($args) > 0) {
-        
+
             $this->setArgs($args);
-        
+
         }
 
         if (isset($this->stmt)) {
-        
+
             return true;
-            
+
         } else {
-        
+
             return false;
-            
+
         }
-        
+
     }
 
     /***
@@ -117,16 +117,16 @@ abstract class AMVDatabase
     public function setArgs()
     {
         $args = func_get_args();
-        
+
         if (count($args) > 0) {
-        
+
             $this->args = $args;
-            
+
         } else {
-        
+
             // NOTE: if no args are passed, any existing args are erased
             $this->args = null;
-            
+
         }
 
     }
@@ -138,63 +138,79 @@ abstract class AMVDatabase
      */
     public function executeStmt()
     {
-    
+
         $args = func_get_args();
-        
+
         if (isset($this->stmt)) {
 
             if (count($args) > 0) {
-            
+
                 if ($this->stmt->execute($args) == true) {
-                
+
                     return true;
-                    
+
                 } else {
-                
+
                     return false;
-                    
+
                 }
-                
+
             } else {
-            
+
                 if ($this->stmt->execute() == true) {
-                
+
                     return true;
-                    
+
                 } else {
-                
+
                     return false;
-                    
+
                 }
-            
+
             }
 
         } else {
-        
+
             return false;
-        
+
         }
 
     }
 
+    /***
+     * fetch a single record
+     * @param:  void
+     * @return: assoc
+     */
     public function fetchRecord()
     {
-    
+
+        return $this->stmt->fetch(PDO::FETCH_ASSOC);
+
     }
 
+    /***
+     * fetch multiple records
+     * @param:  void
+     * @return: array of assoc
+     */
     public function fetchRecords()
     {
-    
+
+        return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+
     }
 
-    public function insertRecord()
+    /***
+     * get the primark key of the last record inserted
+     * @param:  void
+     * @return: int
+     */
+    public function lastInsertId()
     {
-    
-    }
 
-    public function insertRecords()
-    {
-    
+        return $this->pdo->lastInsertId();
+
     }
 
 }
