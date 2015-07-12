@@ -41,9 +41,6 @@ abstract class AMVDatabase
     /* @property the PDO statement handle */
     protected $stmt;
 
-    /* @property array of arguments to pass to statement */
-    protected $args;
-
 /**** ADD THE FOLLOWING TO EXTENDED CLASSES
 
     // database singleton
@@ -107,28 +104,6 @@ abstract class AMVDatabase
         } else {
 
             return false;
-
-        }
-
-    }
-
-    /***
-     * set the statement arguments
-     * @param:  string, [string]
-     * @return: bool
-     */
-    public function setArgs()
-    {
-        $args = func_get_args();
-
-        if (count($args) > 0) {
-
-            $this->args = $args;
-
-        } else {
-
-            // NOTE: if no args are passed, any existing args are erased
-            $this->args = null;
 
         }
 
